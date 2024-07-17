@@ -12,8 +12,6 @@ namespace TaskManagement.Tasks.Infrastructure
     {
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddSingleton<IConfiguration>(configuration);
-
             var connectionString = configuration.GetConnectionString("DefaultConnectionString");
 
             services.AddDbContext<TaskContext>(opt =>
@@ -21,8 +19,9 @@ namespace TaskManagement.Tasks.Infrastructure
                 opt.UseSqlServer(connectionString);
             });
 
+            services.Configure<CosmosDbSettings>(configuration.GetSection("CosmosDbSettings"));
             services.AddSingleton<CosmosDbContext>();
-        
+
             services.AddScoped<ITaskDL, TaskDL>();
 
             return services;

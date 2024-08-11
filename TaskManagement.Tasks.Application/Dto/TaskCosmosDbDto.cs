@@ -4,43 +4,20 @@ namespace TaskManagement.Tasks.Application.Dto
 {
     public class TaskCosmosDbDto
     {
-        [JsonProperty("Id")]
-        public Guid TaskItemId { get; set; }
-        
-        [JsonProperty("Name")]
-        public string TaskItemName { get; set; }
-
-        [JsonProperty("description")]
-        public string Description { get; set; }
-
-        [JsonProperty("startDate")]
-        public DateTime? TaskItemStart { get; set; }
-
-        [JsonProperty("endDate")]
-        public DateTime? TaskItemEnd { get; set; }
-
-        [JsonProperty("createdDate")]
-        public DateTime? TaskItemCreated { get; set; }
-        
-        [JsonProperty("originalTimeEstimated")]
-        public double OriginalTimeEstimated { get; set; }
-
-        [JsonProperty("remainingTime")]
-        public double RemainingTime { get; set; }
-
-        [JsonProperty("completedTime")]
-        public double CompletedTime { get; set; }
-
-        [JsonProperty("userId")]
-        public Guid? UserId { get; set; }
-
-        [JsonProperty("priority")]
-        public string State { get; set; }
-
-        [JsonProperty("state")]
-        public string Priority { get; set; }
-
-        [JsonProperty("commets")]
-        public List<TaskCommentCosmosDbDto>? TaskCommets { get; set; }
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+        public string? Description { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+        public DateTime? CreationDate { get; set; }
+        public double? OriginalTimeEstimated { get; set; }
+        public double? RemainingTime { get; set; }
+        public double? CompletedTime { get; set; }
+        public Guid? CreatedBy { get; set; }
+        public Guid? AssignedTo { get; set; }
+        public Guid? ProjectId { get; set; }
+        public string? State { get; set; }
+        public string? Priority { get; set; }
+        public List<TaskCommentCosmosDbDto>? Comments { get; set; }
     }
 }

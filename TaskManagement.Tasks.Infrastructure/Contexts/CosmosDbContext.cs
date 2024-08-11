@@ -7,7 +7,7 @@ namespace TaskManagement.Tasks.Infrastructure.Contexts
 {
     public class CosmosDbContext
     {
-        private readonly IOptions<CosmosDbSettings> _options;
+        private readonly CosmosDbSettings _options;
         public readonly Container _container;
         public CosmosClient _cosmosClient;
         public string _containerName;
@@ -16,10 +16,10 @@ namespace TaskManagement.Tasks.Infrastructure.Contexts
 
         public CosmosDbContext(IOptions<CosmosDbSettings> options)
         {
-            _options = options;
-            _cosmosClient = new CosmosClient(options.Value.BaseUrl, _options.Value.PrimaryKey);
-            _containerName = options.Value.ContainerName;
-            _dbName = options.Value.DatabaseName;
+            _options = options.Value;
+            _cosmosClient = new CosmosClient(_options.BaseUrl, _options.PrimaryKey);
+            _containerName = _options.ContainerName;
+            _dbName = _options.DatabaseName;
             _container = _cosmosClient.GetContainer(_containerName, _dbName);
         }
     }

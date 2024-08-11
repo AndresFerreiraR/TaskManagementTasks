@@ -15,12 +15,10 @@ namespace TaskManagement.Tasks.Infrastructure.Interfaces
 
         #region CosmosDb
         public Task<List<TaskCosmosDb>> GetListTaskFromCosmosDb();
-
         public Task CreateTaskCosmos(TaskCosmosDb taskCosmos);
-
         public Task UpdateTaskCosmos(TaskCosmosDb taskCosmos);
-
         public Task<TaskCosmosDb> GetTaskCosmosById(string id);
+        public Task UpdateTaskCosmosPatch(TaskCosmosDb taskCosmos);
 
         #endregion
     }

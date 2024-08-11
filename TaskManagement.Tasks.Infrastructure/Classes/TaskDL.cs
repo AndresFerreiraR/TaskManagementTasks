@@ -19,7 +19,7 @@ namespace TaskManagement.Tasks.Infrastructure.Classes
             _cosmosContext = cosmosContext;
         }
 
-
+        #region Sql Server
         public async Task CreateTask(TaskItem task)
         {
             try
@@ -123,17 +123,19 @@ namespace TaskManagement.Tasks.Infrastructure.Classes
             }
         }
 
+        #endregion
 
+        #region Cosmos Db
 
         public async Task<List<TaskCosmosDb>> GetListTaskFromCosmosDb()
         {
             try
-            {   
+            {
                 List<TaskCosmosDb> listResult = new();
                 var sqlQueryCommand = "SELECT * FROM c";
                 var query = _cosmosContext._container.GetItemQueryIterator<TaskCosmosDb>(new QueryDefinition(sqlQueryCommand));
 
-                while(query.HasMoreResults)
+                while (query.HasMoreResults)
                 {
                     _logger.LogInformation($"{DateTime.UtcNow} ** Tratando de consultar consmos Db ** ");
                     var response = await query.ReadNextAsync();
@@ -155,8 +157,8 @@ namespace TaskManagement.Tasks.Infrastructure.Classes
         public async Task CreateTaskCosmos(TaskCosmosDb taskCosmos)
         {
             try
-            {   
-                await _cosmosContext._container.CreateItemAsync(taskCosmos, new PartitionKey(taskCosmos.TaskItemName));
+            {
+                await _cosmosContext._container.CreateItemAsync(taskCosmos, new PartitionKey(taskCosmos.Name));
             }
             catch (Exception ex)
             {
@@ -168,8 +170,8 @@ namespace TaskManagement.Tasks.Infrastructure.Classes
         public async Task UpdateTaskCosmos(TaskCosmosDb taskCosmos)
         {
             try
-            {   
-                await _cosmosContext._container.UpsertItemAsync<TaskCosmosDb>(taskCosmos, new PartitionKey(taskCosmos.TaskItemName));
+            {
+                await _cosmosContext._container.UpsertItemAsync<TaskCosmosDb>(taskCosmos, new PartitionKey(taskCosmos.Name));
             }
             catch (Exception ex)
             {
@@ -182,14 +184,14 @@ namespace TaskManagement.Tasks.Infrastructure.Classes
         public async Task<TaskCosmosDb> GetTaskCosmosById(string id)
         {
             try
-            {   
+            {
                 // var task = await _cosmosContext._container.ReadItemAsync<TaskCosmosDb>(id.ToString(), new PartitionKey("Id"));
                 // var aaa = task.Resource;
                 List<TaskCosmosDb> listResult = new();
                 var sqlQueryCommand = $"SELECT * FROM c WHERE c.id = '{id}'";
                 var query = _cosmosContext._container.GetItemQueryIterator<TaskCosmosDb>(new QueryDefinition(sqlQueryCommand));
 
-                while(query.HasMoreResults)
+                while (query.HasMoreResults)
                 {
                     _logger.LogInformation($"{DateTime.UtcNow} ** Tratando de consultar consmos Db ** ");
                     var response = await query.ReadNextAsync();
@@ -205,5 +207,19 @@ namespace TaskManagement.Tasks.Infrastructure.Classes
             }
         }
 
+        public async Task UpdateTaskCosmosPatch(TaskCosmosDb taskCosmos)
+        {
+            try
+            {
+                await _cosmosContext._container.UpsertItemAsync<TaskCosmosDb>(taskCosmos, new PartitionKey(taskCosmos.Name));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"layer data error {ex.Message}");
+                throw new Exception(ex.Message);
+            }
+        }
     }
+
+    #endregion
 }

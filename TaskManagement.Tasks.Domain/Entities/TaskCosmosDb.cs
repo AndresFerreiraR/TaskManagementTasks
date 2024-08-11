@@ -1,5 +1,3 @@
-
-
 using Newtonsoft.Json;
 
 namespace TaskManagement.Tasks.Domain.Entities
@@ -7,42 +5,48 @@ namespace TaskManagement.Tasks.Domain.Entities
     public class TaskCosmosDb
     {
         [JsonProperty("id")]
-        public Guid TaskItemId { get; set; }
+        public Guid Id { get; set; }
         
         [JsonProperty("Name")]
-        public string TaskItemName { get; set; }
+        public string Name { get; set; }
 
         [JsonProperty("description")]
-        public string Description { get; set; }
+        public string description { get; set; }
 
         [JsonProperty("startDate")]
-        public DateTime? TaskItemStart { get; set; }
+        public DateTime? startDate { get; set; }
 
         [JsonProperty("endDate")]
-        public DateTime? TaskItemEnd { get; set; }
+        public DateTime? endDate { get; set; }
 
-        [JsonProperty("createdDate")]
-        public DateTime? TaskItemCreated { get; set; }
+        [JsonProperty("creationDate")]
+        public DateTime? creationDate { get; set; }
         
         [JsonProperty("originalTimeEstimated")]
-        public double OriginalTimeEstimated { get; set; }
+        public double originalTimeEstimated { get; set; }
 
         [JsonProperty("remainingTime")]
-        public double RemainingTime { get; set; }
+        public double remainingTime { get; set; }
 
         [JsonProperty("completedTime")]
-        public double CompletedTime { get; set; }
+        public double completedTime { get; set; }
 
-        [JsonProperty("userId")]
-        public Guid? UserId { get; set; }
+        [JsonProperty("createdBy")]
+        public Guid? CreatedBy { get; set; }
+
+        [JsonProperty("assignedTo")]
+        public Guid? AssignedTo { get; set; }
+
+        [JsonProperty("projectId")]
+        public Guid ProjectId { get; set; }
 
         [JsonProperty("priority")]
-        public string State { get; set; }
+        public string priority { get; set; }
 
         [JsonProperty("state")]
-        public string Priority { get; set; }
+        public string state { get; set; }
 
         [JsonProperty("commets")]
-        public List<TaskCommentCosmosDb>? TaskCommets { get; set; }
+        public List<TaskCommentCosmosDb>? commets { get; set; }
     }
 }

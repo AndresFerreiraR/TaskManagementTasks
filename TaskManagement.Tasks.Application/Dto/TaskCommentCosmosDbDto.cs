@@ -4,16 +4,9 @@ namespace TaskManagement.Tasks.Application.Dto
 {
     public class TaskCommentCosmosDbDto
     {
-        [JsonProperty("commentId")]
-        public Guid CommentId { get; set; }
-
-        [JsonProperty("textComment")]
+        public Guid Id { get; set; }
         public string TextComment { get; set; }
-
-        [JsonProperty("userId")]
-        public Guid UserId { get; set; }
-        
-        [JsonProperty("commentDate")]
-        public DateTime CommentDate { get; set; }
+        public Guid UserId { get; set; }     
+        public DateTime Date { get; set; }
     }
 }

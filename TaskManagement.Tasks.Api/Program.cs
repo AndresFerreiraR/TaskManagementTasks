@@ -3,6 +3,9 @@ using TaskManagement.Tasks.Infrastructure.Contexts;
 using TaskManagement.Tasks.Application;
 using TaskManagement.Tasks.Infrastructure;
 using TaskManagement.Tasks.Common.Common.Options;
+using Azure.Identity;
+using TaskManagement.Tasks.Api.Modules.Injection;
+using TaskManagement.Tasks.Api.Modules.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +17,27 @@ builder.Services.AddControllers();
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 
-//builder.Services.Configure<CosmosDbSettings>(builder.Configuration.GetSection("CosmosDbSettings"));
+var keyVaultName = builder.Configuration["KeyVaultName"];
+var keyVaultUri = new Uri($"https://{keyVaultName}.vault.azure.net/");
+
+builder.Configuration.AddAzureKeyVault(keyVaultUri, new DefaultAzureCredential());
+
+builder.Services.Configure<CosmosDbSettings>(options =>
+{
+    var jsonSecret = builder.Configuration["CosmosDbSettings"];
+    if (jsonSecret != null)
+    {
+        var settings = System.Text.Json.JsonSerializer.Deserialize<CosmosDbSettings>(jsonSecret);
+        options.BaseUrl = settings?.BaseUrl;
+        options.PrimaryKey = settings?.PrimaryKey;
+        options.DatabaseName = settings?.DatabaseName;
+        options.ContainerName = settings?.ContainerName;
+        options.ConnectionString = settings?.ConnectionString;
+    }
+});
+
+builder.Services.AddInjection();
+
 
 builder.Services.AddSwaggerGen();
 
@@ -30,4 +53,5 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.MapControllers();
+app.AddMiddleware();
 app.Run();

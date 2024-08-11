@@ -5,10 +5,10 @@ namespace TaskManagement.Tasks.Domain.Entities
     public class TaskCommentCosmosDb
     {
         [JsonProperty("commentId")]
-        public Guid CommentId { get; set; }
+        public Guid Id { get; set; }
 
         [JsonProperty("textComment")]
-        public string TextComment { get; set; }
+        public string comment { get; set; }
 
         [JsonProperty("userId")]
         public Guid UserId { get; set; }

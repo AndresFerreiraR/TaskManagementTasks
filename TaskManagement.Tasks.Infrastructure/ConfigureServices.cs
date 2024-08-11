@@ -1,4 +1,6 @@
+using Azure.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TaskManagement.Tasks.Common.Common.Options;
@@ -19,7 +21,11 @@ namespace TaskManagement.Tasks.Infrastructure
                 opt.UseSqlServer(connectionString);
             });
 
-            services.Configure<CosmosDbSettings>(configuration.GetSection("CosmosDbSettings"));
+            // https://tasksecrets.vault.azure.net/secrets/CosmosDbSettings/c5d963ffc67a46b69f3b45fb0cbc1b0b
+
+            // Configura CosmosDbSettings con IOptions
+
+            //services.Configure<CosmosDbSettings>(configuration.GetSection("CosmosDbSettings"));
             services.AddSingleton<CosmosDbContext>();
 
             services.AddScoped<ITaskDL, TaskDL>();

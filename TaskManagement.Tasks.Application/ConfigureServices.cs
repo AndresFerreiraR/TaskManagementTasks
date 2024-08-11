@@ -2,7 +2,9 @@ using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
 using TaskManagement.Tasks.Application.Classes;
 using TaskManagement.Tasks.Application.Interfaces;
-using TaskManagement.Tasks.Application.Mappings;
+using TaskManagement.Tasks.Application.Common.Mappings;
+using FluentValidation;
+using TaskManagement.Tasks.Application.Common.Validations;
 
 namespace TaskManagement.Tasks.Application
 {
@@ -18,7 +20,7 @@ namespace TaskManagement.Tasks.Application
             IMapper mapper = mappingConfig.CreateMapper();
 
             services.AddSingleton(mapper);
-
+            services.AddValidatorsFromAssemblyContaining<TaskCosmosDbDtoValidation>();
             services.AddScoped<ITaskBL, TaskBL>();
 
             return services;

@@ -8,7 +8,10 @@ using TaskManagement.Tasks.Api.Modules.Injection;
 using TaskManagement.Tasks.Api.Modules.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
-
+if (builder.Environment.IsProduction())
+{
+    builder.WebHost.UseUrls("http://*:80");
+}
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -41,6 +44,12 @@ builder.Services.AddInjection();
 
 builder.Services.AddSwaggerGen();
 
+string myPolicy = "PolicyApiEcommerce";
+
+builder.Services.AddCors(options => options.AddPolicy(myPolicy, builder => builder.AllowAnyOrigin()
+                                                                               .AllowAnyHeader()
+                                                                               .AllowAnyMethod()));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -49,7 +58,8 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
-
+app.UseRouting();
+app.UseCors(myPolicy);
 app.MapControllers();
 app.AddMiddleware();
 app.Run();

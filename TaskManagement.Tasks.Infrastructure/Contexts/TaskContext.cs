@@ -29,16 +29,6 @@ namespace TaskManagement.Tasks.Infrastructure.Contexts
                 e.Property(t => t.CompletedTime).HasPrecision(precision: 3, scale: 1);
             });
 
-            // modelBuilder.Entity<Priority>(e => 
-            // {
-            //     e.HasKey(t => t.PriorityId);
-            // });
-
-            // modelBuilder.Entity<State>(e => 
-            // {
-            //     e.HasKey(t => t.StateId);
-            // });
-
             modelBuilder.Entity<TaskCommets>(e => 
             {
                 e.HasKey(t => t.CommentId);

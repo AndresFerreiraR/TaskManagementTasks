@@ -78,5 +78,12 @@ namespace TaskManagement.Tasks.Api.Controllers
             var response =  await _business.GetTaskCosmosDbById(id);
             return Ok(response);
         }
+
+        [HttpGet("Saludo/{saludo}")]
+        public IActionResult SaludoMethod(string saludo)
+        {
+            var response = $"Hola {saludo}";
+            return Ok(response);
+        }
     }
 }

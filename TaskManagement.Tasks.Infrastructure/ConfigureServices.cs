@@ -12,20 +12,8 @@ namespace TaskManagement.Tasks.Infrastructure
 {
     public static class ConfigureServices
     {
-        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
         {
-            var connectionString = configuration.GetConnectionString("DefaultConnectionString");
-
-            services.AddDbContext<TaskContext>(opt =>
-            {
-                opt.UseSqlServer(connectionString);
-            });
-
-            // https://tasksecrets.vault.azure.net/secrets/CosmosDbSettings/c5d963ffc67a46b69f3b45fb0cbc1b0b
-
-            // Configura CosmosDbSettings con IOptions
-
-            //services.Configure<CosmosDbSettings>(configuration.GetSection("CosmosDbSettings"));
             services.AddSingleton<CosmosDbContext>();
 
             services.AddScoped<ITaskDL, TaskDL>();

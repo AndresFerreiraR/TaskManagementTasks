@@ -4,15 +4,6 @@ namespace TaskManagement.Tasks.Infrastructure.Interfaces
 {
     public interface ITaskDL
     {
-        #region SQL Region
-        public Task CreateTask(TaskItem task);
-        public Task UpdateTask(TaskItem task);
-        public Task<TaskItem> GetTaskById(Guid id);
-        public Task<List<TaskItem>> GetAllTasks();
-        public Task<List<TaskItem>> GetTasksByFilter(TaskItem task);
-
-        #endregion
-
         #region CosmosDb
         public Task<List<TaskCosmosDb>> GetListTaskFromCosmosDb();
         public Task CreateTaskCosmos(TaskCosmosDb taskCosmos);

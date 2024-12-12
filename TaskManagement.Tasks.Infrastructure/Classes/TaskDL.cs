@@ -9,121 +9,13 @@ namespace TaskManagement.Tasks.Infrastructure.Classes
 {
     public class TaskDL : ITaskDL
     {
-        private readonly TaskContext _context;
         private readonly CosmosDbContext _cosmosContext;
         private readonly ILogger<TaskDL> _logger;
-        public TaskDL(TaskContext context, ILogger<TaskDL> logger, CosmosDbContext cosmosContext)
+        public TaskDL(ILogger<TaskDL> logger, CosmosDbContext cosmosContext)
         {
-            _context = context;
             _logger = logger;
             _cosmosContext = cosmosContext;
         }
-
-        #region Sql Server
-        public async Task CreateTask(TaskItem task)
-        {
-            try
-            {
-                await _context.TaskItem.AddAsync(task);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"layer data error {ex.Message}");
-                throw new Exception(ex.Message);
-            }
-        }
-
-        public async Task<List<TaskItem>> GetAllTasks()
-        {
-            try
-            {
-                var listTasks = await _context.TaskItem
-                                              .Include(s => s.State)
-                                              .Include(p => p.Priority)
-                                              .Include(c => c.TaskCommets)
-                                              .ToListAsync();
-
-                return listTasks;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"layer data error {ex.Message}");
-                throw new Exception(ex.Message);
-            }
-        }
-
-        public async Task<TaskItem> GetTaskById(Guid id)
-        {
-            try
-            {
-                var taskEntity = await _context.TaskItem
-                                               .Include(s => s.State)
-                                               .Include(p => p.Priority)
-                                               .Include(c => c.TaskCommets)
-                                               .FirstOrDefaultAsync(t => t.TaskItemId == id);
-
-                return taskEntity;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"layer data error {ex.Message}");
-                throw new Exception(ex.Message);
-            }
-        }
-
-
-        public async Task<List<TaskItem>> GetTasksByFilter(TaskItem task)
-        {
-            try
-            {
-                var taskEntity = await _context.TaskItem
-                                               .Include(s => s.State)
-                                               .Include(p => p.Priority)
-                                               .Include(c => c.TaskCommets)
-                                               .Where(t => task.TaskItemName.Contains(t.TaskItemName))
-                                               .ToListAsync();
-
-                return taskEntity;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"layer data error {ex.Message}");
-                throw new Exception(ex.Message);
-            }
-        }
-
-        public async Task UpdateTask(TaskItem task)
-        {
-            try
-            {
-                var taskEntity = await _context.TaskItem.FirstOrDefaultAsync(x => x.TaskItemId == task.TaskItemId);
-
-                if (taskEntity is not null)
-                {
-                    taskEntity.TaskItemName = task.TaskItemName;
-                    taskEntity.TaskItemDescription = task.TaskItemDescription;
-                    taskEntity.TaskItemStart = task.TaskItemStart;
-                    taskEntity.TaskItemEnd = task.TaskItemEnd;
-                    taskEntity.TaskItemCreated = task.TaskItemCreated;
-                    taskEntity.OriginalTimeEstimated = task.OriginalTimeEstimated;
-                    taskEntity.RemainingTime = task.RemainingTime;
-                    taskEntity.CompletedTime = task.CompletedTime;
-                    taskEntity.UserId = task.UserId;
-                    taskEntity.Priority = task.Priority;
-                    taskEntity.State = task.State;
-                }
-
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"layer data error {ex.Message}");
-                throw new Exception(ex.Message);
-            }
-        }
-
-        #endregion
 
         #region Cosmos Db
 

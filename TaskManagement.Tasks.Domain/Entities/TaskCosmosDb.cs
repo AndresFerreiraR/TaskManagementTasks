@@ -23,16 +23,16 @@ namespace TaskManagement.Tasks.Domain.Entities
         public DateTime? creationDate { get; set; }
         
         [JsonProperty("originalTimeEstimated")]
-        public double originalTimeEstimated { get; set; }
+        public double? originalTimeEstimated { get; set; }
 
         [JsonProperty("remainingTime")]
-        public double remainingTime { get; set; }
+        public double? remainingTime { get; set; }
 
         [JsonProperty("completedTime")]
-        public double completedTime { get; set; }
+        public double? completedTime { get; set; }
 
         [JsonProperty("createdBy")]
-        public Guid? CreatedBy { get; set; }
+        public Guid CreatedBy { get; set; }
 
         [JsonProperty("assignedTo")]
         public Guid? AssignedTo { get; set; }
@@ -41,12 +41,12 @@ namespace TaskManagement.Tasks.Domain.Entities
         public Guid ProjectId { get; set; }
 
         [JsonProperty("priority")]
-        public string priority { get; set; }
+        public string? priority { get; set; }
 
         [JsonProperty("state")]
-        public string state { get; set; }
+        public string? state { get; set; }
 
         [JsonProperty("commets")]
-        public List<TaskCommentCosmosDb>? commets { get; set; }
+        public List<TaskCommentCosmosDb>? Comments { get; set; }
     }
 }

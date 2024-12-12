@@ -8,10 +8,6 @@ namespace TaskManagement.Tasks.Application.Common.Mappings
     {
         public MappingProfile()
         {
-            CreateMap<TaskItem, TaskItemDto>().ReverseMap();
-            CreateMap<State, StateDto>().ReverseMap();
-            CreateMap<Priority, PriorityDto>().ReverseMap();
-            CreateMap<TaskCommets, TaskCommetsDto>().ReverseMap();
             CreateMap<TaskCommentCosmosDb, TaskCommentCosmosDbDto>().ReverseMap();
             CreateMap<TaskCosmosDb, TaskCosmosDbDto>().ReverseMap();
         }

@@ -6,7 +6,7 @@ namespace TaskManagement.Tasks.Application.Dto
     {
         public Guid Id { get; set; }
         public string TextComment { get; set; }
-        public Guid UserId { get; set; }     
-        public DateTime Date { get; set; }
+        public Guid CommentBy { get; set; }     
+        public DateTime CommentDate { get; set; }
     }
 }

@@ -50,7 +50,7 @@ namespace TaskManagement.Tasks.Infrastructure.Classes
         {
             try
             {
-                await _cosmosContext._container.CreateItemAsync(taskCosmos, new PartitionKey(taskCosmos.Name));
+                await _cosmosContext._container.CreateItemAsync(taskCosmos, new PartitionKey(taskCosmos.TaskId));
             }
             catch (Exception ex)
             {
@@ -63,7 +63,7 @@ namespace TaskManagement.Tasks.Infrastructure.Classes
         {
             try
             {
-                await _cosmosContext._container.UpsertItemAsync<TaskCosmosDb>(taskCosmos, new PartitionKey(taskCosmos.Name));
+                await _cosmosContext._container.UpsertItemAsync<TaskCosmosDb>(taskCosmos, new PartitionKey(taskCosmos.TaskId.ToString()));
             }
             catch (Exception ex)
             {
@@ -104,6 +104,58 @@ namespace TaskManagement.Tasks.Infrastructure.Classes
             try
             {
                 await _cosmosContext._container.UpsertItemAsync<TaskCosmosDb>(taskCosmos, new PartitionKey(taskCosmos.Name));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"layer data error {ex.Message}");
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<List<CardTask>> GetTaskCardByProjectId(string projectId)
+        {
+            try
+            {
+                List<CardTask> listResult = new();
+                var sqlQueryCommand = $"SELECT c.id, "
+                                           + $"c.taskId, "
+                                           + $"c.name, "
+                                           + $"c.assignedTo, "
+                                           + $"c.createdBy, "
+                                           + $"c.priority, "
+                                           + $"c.state, "
+                                           + $"c.tags "
+                                           + $"FROM c WHERE c.projectId = '{projectId}'";
+                var query = _cosmosContext._container.GetItemQueryIterator<CardTask>(new QueryDefinition(sqlQueryCommand));
+
+                while (query.HasMoreResults)
+                {
+                    _logger.LogInformation($"{DateTime.UtcNow} ** Tratando de consultar consmos Db ** ");
+                    var response = await query.ReadNextAsync();
+                    _logger.LogInformation($"{DateTime.UtcNow} Se consulto consmos Db");
+                    listResult.AddRange(response);
+                }
+                return listResult;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"layer data error {ex.Message}");
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task UpdateTaskState(TaskCosmosDb taskCosmosDb)
+        {
+            try
+            {
+                var patchOperations = new List<PatchOperation>
+                {
+                    PatchOperation.Replace("/state", taskCosmosDb.State)
+                };
+
+                await _cosmosContext._container.PatchItemAsync<TaskCosmosDb>(taskCosmosDb.Id,
+                                                           new PartitionKey(taskCosmosDb.TaskId),
+                                                           patchOperations: patchOperations);
             }
             catch (Exception ex)
             {

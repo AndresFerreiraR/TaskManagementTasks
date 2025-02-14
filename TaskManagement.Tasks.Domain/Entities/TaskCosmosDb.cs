@@ -5,31 +5,34 @@ namespace TaskManagement.Tasks.Domain.Entities
     public class TaskCosmosDb
     {
         [JsonProperty("id")]
-        public Guid Id { get; set; }
+        public string Id { get; set; }
         
-        [JsonProperty("Name")]
+        [JsonProperty("taskId")]
+        public string TaskId { get; set; }
+        
+        [JsonProperty("name")]
         public string Name { get; set; }
 
         [JsonProperty("description")]
-        public string description { get; set; }
+        public string Description { get; set; }
 
         [JsonProperty("startDate")]
-        public DateTime? startDate { get; set; }
+        public DateTime? StartDate { get; set; }
 
         [JsonProperty("endDate")]
-        public DateTime? endDate { get; set; }
+        public DateTime? EndDate { get; set; }
 
         [JsonProperty("creationDate")]
-        public DateTime? creationDate { get; set; }
+        public DateTime? CreationDate { get; set; }
         
         [JsonProperty("originalTimeEstimated")]
-        public double? originalTimeEstimated { get; set; }
+        public double? OriginalTimeEstimated { get; set; }
 
         [JsonProperty("remainingTime")]
-        public double? remainingTime { get; set; }
+        public double? RemainingTime { get; set; }
 
         [JsonProperty("completedTime")]
-        public double? completedTime { get; set; }
+        public double? CompletedTime { get; set; }
 
         [JsonProperty("createdBy")]
         public Guid CreatedBy { get; set; }
@@ -41,12 +44,15 @@ namespace TaskManagement.Tasks.Domain.Entities
         public Guid ProjectId { get; set; }
 
         [JsonProperty("priority")]
-        public string? priority { get; set; }
+        public string? Priority { get; set; }
 
         [JsonProperty("state")]
-        public string? state { get; set; }
+        public string? State { get; set; }
 
         [JsonProperty("commets")]
         public List<TaskCommentCosmosDb>? Comments { get; set; }
+        
+        [JsonProperty("tags")]
+        public List<string> Tags { get; set; }
     }
 }

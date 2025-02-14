@@ -10,6 +10,7 @@ namespace TaskManagement.Tasks.Application.Common.Mappings
         {
             CreateMap<TaskCommentCosmosDb, TaskCommentCosmosDbDto>().ReverseMap();
             CreateMap<TaskCosmosDb, TaskCosmosDbDto>().ReverseMap();
+            CreateMap<CardTask, CardTaskDto>().ReverseMap();
         }
     }
 }

@@ -4,8 +4,9 @@ namespace TaskManagement.Tasks.Application.Dto
 {
     public class TaskCosmosDbDto
     {
-        public Guid Id { get; set; }
-        public string Name { get; set; }
+        public string Id { get; set; }
+        public string TaskId { get; set; }
+        public string? Name { get; set; }
         public string? Description { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
@@ -19,5 +20,6 @@ namespace TaskManagement.Tasks.Application.Dto
         public string? State { get; set; }
         public string? Priority { get; set; }
         public List<TaskCommentCosmosDbDto>? Comments { get; set; }
+        public List<string>? Tags { get; set; }
     }
 }

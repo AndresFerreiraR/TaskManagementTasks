@@ -32,8 +32,8 @@ namespace TaskManagement.Tasks.Test.Tests.Application.Classes
         public async Task CreateTaskCosmos_ShouldReturnSuccess_WhenTaskIsCreated()
         {
             // Arrange
-            var taskCosmosDto = new TaskCosmosDbDto { Id = Guid.NewGuid(), CreationDate = DateTime.Now };
-            var taskEntity = new TaskCosmosDb { Id = taskCosmosDto.Id, creationDate = DateTime.Now };
+            var taskCosmosDto = new TaskCosmosDbDto { Id = Guid.NewGuid().ToString(), CreationDate = DateTime.Now };
+            var taskEntity = new TaskCosmosDb { Id = taskCosmosDto.Id, CreationDate = DateTime.Now };
 
             _mockMapper.Setup(m => m.Map<TaskCosmosDb>(taskCosmosDto))
                 .Returns(taskEntity);

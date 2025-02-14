@@ -10,6 +10,8 @@ namespace TaskManagement.Tasks.Infrastructure.Interfaces
         public Task UpdateTaskCosmos(TaskCosmosDb taskCosmos);
         public Task<TaskCosmosDb> GetTaskCosmosById(string id);
         public Task UpdateTaskCosmosPatch(TaskCosmosDb taskCosmos);
+        public Task<List<CardTask>> GetTaskCardByProjectId(string projectId);
+        public Task UpdateTaskState(TaskCosmosDb taskCosmosDb);
 
         #endregion
     }

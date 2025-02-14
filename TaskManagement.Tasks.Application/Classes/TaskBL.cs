@@ -7,6 +7,7 @@ namespace TaskManagement.Tasks.Application.Classes
     using TaskManagement.Tasks.Application.Interfaces;
     using TaskManagement.Tasks.Common.Common.Resources;
     using TaskManagement.Tasks.Common.Common.Responses;
+    using TaskManagement.Tasks.Common.Mapper;
     using TaskManagement.Tasks.Domain.Entities;
     using TaskManagement.Tasks.Infrastructure.Interfaces;
 
@@ -52,7 +53,10 @@ namespace TaskManagement.Tasks.Application.Classes
         {
             Response<bool> response = new();
 
-            taskCosmos.Id = taskCosmos.Id == default ? Guid.NewGuid() : taskCosmos.Id;
+            taskCosmos.Id = string.IsNullOrEmpty(taskCosmos.Id) || 
+                            Guid.Parse(taskCosmos.Id) == default ? 
+                            Guid.NewGuid().ToString() : taskCosmos.Id;
+            taskCosmos.TaskId = taskCosmos.Id;
             taskCosmos.CreationDate = DateTime.Now.Date;
             var taskEntity = _mapper.Map<TaskCosmosDb>(taskCosmos);
             await _repoTask.CreateTaskCosmos(taskEntity);
@@ -67,6 +71,14 @@ namespace TaskManagement.Tasks.Application.Classes
         public async Task<Response<bool>> UpdateTaskCosmos(TaskCosmosDbDto taskCosmos)
         {
             Response<bool> response = new();
+
+            if(taskCosmos.Comments.Any())
+            {
+                taskCosmos.Comments.Where(c => c.Id == default).ToList().ForEach(c => 
+                {
+                    c.Id = Guid.NewGuid();
+                });
+            }
 
             var taskEntity = _mapper.Map<TaskCosmosDb>(taskCosmos);
             await _repoTask.UpdateTaskCosmos(taskEntity);
@@ -88,6 +100,31 @@ namespace TaskManagement.Tasks.Application.Classes
             response.Data = taskDto;
             response.IsSuccess = true;
 
+            return response;
+        }
+
+        public async Task<Response<List<CardTaskDto>>> GetTaskCardByProjectId(string projectId)
+        {
+            Response<List<CardTaskDto>> response = new();
+
+            var cosomosentity = await _repoTask.GetTaskCardByProjectId(projectId);
+            var taskDto = _mapper.Map<List<CardTaskDto>>(cosomosentity);
+
+            response.Data = taskDto;
+            response.IsSuccess = true;
+
+            return response;
+        }
+
+        public async Task<Response<bool>> UpdateTaskState(TaskCosmosDbDto taskCosmosDbDto)
+        {
+            Response<bool> response = new();
+            var taskEntity = _mapper.Map<TaskCosmosDb>(taskCosmosDbDto);
+            await _repoTask.UpdateTaskState(taskEntity);
+
+            response.IsSuccess = true;
+            response.Data = true;
+ 
             return response;
         }
 

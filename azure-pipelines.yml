@@ -11,6 +11,8 @@ steps:
   displayName: "Mensaje de inicio"
 
 - script: |
+    git config --global user.email "pipeline@azuredevops.com"
+    git config --global user.name "Azure DevOps Pipeline"
     
     # Agregar Azure DevOps como remote (solo si no existe)
     git remote add azure https://acferreirar@dev.azure.com/acferreirar/Test/_git/TaskManagementTasks || true

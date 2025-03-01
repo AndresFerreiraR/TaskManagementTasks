@@ -31,7 +31,7 @@ namespace TaskManagement.Tasks.Application.Classes
         public async Task<Response<List<TaskCosmosDbDto>>> GetListTaskFromCosmosDb()
         {
             Response<List<TaskCosmosDbDto>> response = new();
-
+            _logger.LogInformation($"From Class {nameof(TaskBL)} an method {nameof(GetListTaskFromCosmosDb)} list cosmosTask");
             var entity = await _repoTask.GetListTaskFromCosmosDb();
             var taskItemDto = _mapper.Map<List<TaskCosmosDbDto>>(entity);
 
@@ -84,7 +84,7 @@ namespace TaskManagement.Tasks.Application.Classes
             await _repoTask.UpdateTaskCosmos(taskEntity);
 
             response.IsSuccess = true;
-            response.Message = TextResources.RECORD_CREATED;
+            response.Message = TextResources.RECORD_UPDATED;
 
             return response;
         }

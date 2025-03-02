@@ -1,0 +1,68 @@
+# This workflow will build and push a .NET Core app to an Azure Web App when a commit is pushed to your default branch.
+#
+# This workflow assumes you have already created the target Azure App Service web app.
+# For instructions see https://docs.microsoft.com/en-us/azure/app-service/quickstart-dotnetcore?tabs=net60&pivots=development-environment-vscode
+#
+# To configure this workflow:
+#
+# 1. Download the Publish Profile for your Azure Web App. You can download this file from the Overview page of your Web App in the Azure Portal.
+#    For more information: https://docs.microsoft.com/en-us/azure/app-service/deploy-github-actions?tabs=applevel#generate-deployment-credentials
+#
+# 2. Create a secret in your repository named AZURE_WEBAPP_PUBLISH_PROFILE, paste the publish profile contents as the value of the secret.
+#    For instructions on obtaining the publish profile see: https://docs.microsoft.com/azure/app-service/deploy-github-actions#configure-the-github-secret
+#
+# 3. Change the value for the AZURE_WEBAPP_NAME. Optionally, change the AZURE_WEBAPP_PACKAGE_PATH and DOTNET_VERSION environment variables below.
+#
+# For more information on GitHub Actions for Azure: https://github.com/Azure/Actions
+# For more information on the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# For more samples to get started with GitHub Action workflows to deploy to Azure: https://github.com/Azure/actions-workflow-samples
+name: Deploy .NET 8 API to Azure Web App
+
+on:
+  push:
+    branches:
+      - main  # Se ejecuta cuando se hace push a main
+  workflow_dispatch:  # Permite ejecutarlo manualmente
+
+env:
+  AZURE_WEBAPP_NAME: TaskManagementTask  # Nombre real de tu Azure Web App
+  BUILD_CONFIG: Release
+  PACKAGE_DIR: ${{ github.workspace }}/publish
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest  
+    environment: main  # Nombre del Environment en GitHub
+
+    steps:
+      - name: 🛒 Checkout del código
+        uses: actions/checkout@v4
+
+      - name: 🔧 Configurar .NET 8
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 8.0.x
+
+      - name: 🏗️ Restaurar dependencias
+        run: dotnet restore
+
+      - name: 🔨 Compilar proyecto
+        run: dotnet build --configuration $BUILD_CONFIG --no-restore
+
+      - name: ✅ Ejecutar pruebas unitarias
+        run: dotnet test --configuration $BUILD_CONFIG --no-build --no-restore
+
+      - name: 📦 Publicar el proyecto
+        run: dotnet publish -c $BUILD_CONFIG -o $PACKAGE_DIR --no-build --no-restore
+
+      - name: 📦 Generar archivo .zip
+        run: |
+          cd $PACKAGE_DIR
+          zip -r ../deploy.zip .
+
+      - name: 🚀 Desplegar en Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: deploy.zip

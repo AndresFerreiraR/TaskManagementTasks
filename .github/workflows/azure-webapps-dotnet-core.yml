@@ -22,7 +22,7 @@ on:
   push:
     branches:
       - main  # Se ejecuta cuando se hace push a main
-  workflow_dispatch:  # Permite ejecutarlo manualmente
+  workflow_dispatch:
 
 env:
   AZURE_WEBAPP_NAME: TaskManagementTask  # Nombre real de tu Azure Web App

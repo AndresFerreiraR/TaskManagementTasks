@@ -18,12 +18,10 @@ builder.Services.AddControllers();
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices();
 
-if (builder.Environment.IsDevelopment())
-{
-    var keyVaultName = builder.Configuration["KeyVaultName"];
-    var keyVaultUri = new Uri($"https://{keyVaultName}.vault.azure.net/");
-    builder.Configuration.AddAzureKeyVault(keyVaultUri, new DefaultAzureCredential());
-}
+
+var keyVaultName = builder.Configuration["KeyVaultName"];
+var keyVaultUri = new Uri($"https://{keyVaultName}.vault.azure.net/");
+builder.Configuration.AddAzureKeyVault(keyVaultUri, new DefaultAzureCredential());
 
 builder.Services.Configure<CosmosDbSettings>(options =>
 {

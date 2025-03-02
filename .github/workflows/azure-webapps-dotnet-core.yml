@@ -47,7 +47,7 @@ jobs:
           dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
 
       - name: 🏗️ Restaurar dependencias
-        run: dotnet restore ${{ env.WORKING_DIRECTORY }}
+        run: dotnet restore "${{ env.WORKING_DIRECTORY }}"
 
       - name: 🔨 Compilar proyecto
         run: dotnet build $WORKING_DIRECTORY --configuration $BUILD_CONFIG --no-restore

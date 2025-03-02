@@ -29,7 +29,7 @@ env:
   AZURE_WEBAPP_PACKAGE_NAME: TaskManagement.Task.Api/publish
   BUILD_CONFIG: Release
   DOTNET_CORE_VERSION: 8.0.x
-  WORKING_DIRECTORY: TaskManagement.Task.Api
+  WORKING_DIRECTORY: ${{ github.workspace }}
   #PACKAGE_DIR: ${{ github.workspace }}/publish
 
 jobs:

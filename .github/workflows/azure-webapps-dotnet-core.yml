@@ -26,11 +26,14 @@ on:
 
 env:
   AZURE_WEBAPP_NAME: ToDeleteSoom  # Nombre real de tu Azure Web App
+  AZURE_WEBAPP_PACKAGE_NAME: TaskManagement.Task.Api/publish
   BUILD_CONFIG: Release
-  PACKAGE_DIR: ${{ github.workspace }}/publish
+  DOTNET_CORE_VERSION: 8.0.x
+  WORKING_DIRECTORY: TaskManagement.Task.Api
+  #PACKAGE_DIR: ${{ github.workspace }}/publish
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest  
     environment: main  # Nombre del Environment en GitHub
 
@@ -41,28 +44,43 @@ jobs:
       - name: 🔧 Configurar .NET 8
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 8.0.x
+          dotnet-version: $DOTNET_CORE_VERSION
 
       - name: 🏗️ Restaurar dependencias
-        run: dotnet restore
+        run: dotnet restore ${{ env.WORKING_DIRECTORY }}
 
       - name: 🔨 Compilar proyecto
-        run: dotnet build --configuration $BUILD_CONFIG --no-restore
+        run: dotnet build $WORKING_DIRECTORY --configuration $BUILD_CONFIG --no-restore
 
       - name: ✅ Ejecutar pruebas unitarias
-        run: dotnet test --configuration $BUILD_CONFIG --no-build --no-restore
+        run: dotnet test $WORKING_DIRECTORY --configuration $BUILD_CONFIG --no-build --no-restore
 
       - name: 📦 Publicar el proyecto
-        run: dotnet publish -c $BUILD_CONFIG -o $PACKAGE_DIR --self-contained false --no-build --no-restore
+        run: dotnet publish $WORKING_DIRECTORY -c $BUILD_CONFIG -o $AZURE_WEBAPP_PACKAGE_NAME --self-contained false --no-build --no-restore
 
-      - name: 📦 Generar archivo .zip
-        run: |
-          cd $PACKAGE_DIR
-          zip -r ../deploy.zip .
+      #- name: 📦 Generar archivo .zip
+      #  run: |
+      #    cd $PACKAGE_DIR
+      #    zip -r ../deploy.zip .
 
+      - name: Publish Artifacts
+        uses: actions/upload-artifact@v3
+        with: 
+          name: webapp
+          path: $AZURE_WEBAPP_PACKAGE_NAME
+          
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Download artifact from buil job
+        uses: actions/download-artifact@v3
+        with:
+          name: webapp
+          path: $AZURE_WEBAPP_PACKAGE_NAME
       - name: 🚀 Desplegar en Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: deploy.zip
+          package: $AZURE_WEBAPP_PACKAGE_NAME

@@ -26,10 +26,10 @@ on:
 
 env:
   AZURE_WEBAPP_NAME: ToDeleteSoom  # Nombre real de tu Azure Web App
-  AZURE_WEBAPP_PACKAGE_NAME: ${{ github.workspace }}/publish
+  AZURE_WEBAPP_PACKAGE_NAME: TaskManagement.Tasks.Api/publish
   BUILD_CONFIG: Release
   DOTNET_CORE_VERSION: 8.0.x
-  WORKING_DIRECTORY: ${{ github.workspace }}
+  WORKING_DIRECTORY: TaskManagement.Tasks.Api
   #PACKAGE_DIR: ${{ github.workspace }}/publish
 
 jobs:

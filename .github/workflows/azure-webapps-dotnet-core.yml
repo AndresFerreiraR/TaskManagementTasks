@@ -53,7 +53,7 @@ jobs:
         run: dotnet test --configuration $BUILD_CONFIG --no-build --no-restore
 
       - name: 📦 Publicar el proyecto
-        run: dotnet publish -c $BUILD_CONFIG -o $PACKAGE_DIR --no-build --no-restore
+        run: dotnet publish -c $BUILD_CONFIG -o $PACKAGE_DIR --self-contained false --no-build --no-restore
 
       - name: 📦 Generar archivo .zip
         run: |

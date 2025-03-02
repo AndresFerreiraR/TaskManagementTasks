@@ -50,24 +50,30 @@ jobs:
         run: dotnet restore "${{ env.WORKING_DIRECTORY }}"
 
       - name: 🔨 Compilar proyecto
-        run: dotnet build $WORKING_DIRECTORY --configuration $BUILD_CONFIG --no-restore
+        run: dotnet build "${{ env.WORKING_DIRECTORY }}" --configuration $BUILD_CONFIG --no-restore
 
       - name: ✅ Ejecutar pruebas unitarias
-        run: dotnet test $WORKING_DIRECTORY --configuration $BUILD_CONFIG --no-build --no-restore
+        run: dotnet test "${{ env.WORKING_DIRECTORY }}" --configuration $BUILD_CONFIG --no-build --no-restore
 
       - name: 📦 Publicar el proyecto
-        run: dotnet publish $WORKING_DIRECTORY -c $BUILD_CONFIG -o $AZURE_WEBAPP_PACKAGE_NAME --self-contained false --no-build --no-restore
+        run: dotnet publish "${{ env.WORKING_DIRECTORY }}" -c $BUILD_CONFIG -o "${{ env.AZURE_WEBAPP_PACKAGE_NAME }}" --self-contained false --no-build --no-restore
 
       #- name: 📦 Generar archivo .zip
       #  run: |
       #    cd $PACKAGE_DIR
       #    zip -r ../deploy.zip .
+      - name: 🔍 Verificar archivos en la carpeta de publicación
+        run: ls -lR ${{ env.AZURE_WEBAPP_PACKAGE_NAME }}
 
+        
       - name: Publish Artifacts
         uses: actions/upload-artifact@v4
         with: 
           name: webapp
-          path: $AZURE_WEBAPP_PACKAGE_NAME
+          path: ${{ env.AZURE_WEBAPP_PACKAGE_NAME }}
+
+      - name: 🔍 Listar archivos antes de subir artifacts
+        run: ls -lR ${{ env.AZURE_WEBAPP_PACKAGE_NAME }}
           
   deploy:
     runs-on: ubuntu-latest
@@ -77,10 +83,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: webapp
-          path: $AZURE_WEBAPP_PACKAGE_NAME
+          path: ${{ env.AZURE_WEBAPP_PACKAGE_NAME }}
       - name: 🚀 Desplegar en Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: $AZURE_WEBAPP_PACKAGE_NAME
+          package: ${{ env.AZURE_WEBAPP_PACKAGE_NAME }}

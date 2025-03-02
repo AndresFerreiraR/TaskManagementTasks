@@ -50,13 +50,13 @@ jobs:
         run: dotnet restore "${{ env.WORKING_DIRECTORY }}"
 
       - name: 🔨 Compilar proyecto
-        run: dotnet build "${{ env.WORKING_DIRECTORY }}" --configuration $BUILD_CONFIG --no-restore
+        run: dotnet build "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.BUILD_CONFIG }} --no-restore
 
       - name: ✅ Ejecutar pruebas unitarias
-        run: dotnet test "${{ env.WORKING_DIRECTORY }}" --configuration $BUILD_CONFIG --no-build --no-restore
+        run: dotnet test "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.BUILD_CONFIG }} --no-build --no-restore
 
       - name: 📦 Publicar el proyecto
-        run: dotnet publish "${{ env.WORKING_DIRECTORY }}" -c $BUILD_CONFIG -o "${{ env.AZURE_WEBAPP_PACKAGE_NAME }}" --self-contained false --no-build --no-restore
+        run: dotnet publish "${{ env.WORKING_DIRECTORY }}" -c ${{ env.BUILD_CONFIG }} -o "${{ env.AZURE_WEBAPP_PACKAGE_NAME }}" --self-contained false --no-build --no-restore
 
       #- name: 📦 Generar archivo .zip
       #  run: |

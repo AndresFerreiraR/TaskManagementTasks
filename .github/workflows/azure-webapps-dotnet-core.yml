@@ -28,7 +28,7 @@ env:
   AZURE_WEBAPP_NAME: ToDeleteSoom  # Nombre real de tu Azure Web App
   AZURE_WEBAPP_PACKAGE_NAME: TaskManagement.Task.Api/publish
   BUILD_CONFIG: Release
-  DOTNET_CORE_VERSION: 8.x
+  DOTNET_CORE_VERSION: 8.0.x
   WORKING_DIRECTORY: TaskManagement.Task.Api
   #PACKAGE_DIR: ${{ github.workspace }}/publish
 
@@ -44,7 +44,7 @@ jobs:
       - name: 🔧 Configurar .NET 8
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: $DOTNET_CORE_VERSION
+          dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
 
       - name: 🏗️ Restaurar dependencias
         run: dotnet restore ${{ env.WORKING_DIRECTORY }}

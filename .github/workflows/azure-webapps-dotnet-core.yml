@@ -25,7 +25,7 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_WEBAPP_NAME: TaskManagementTask  # Nombre real de tu Azure Web App
+  AZURE_WEBAPP_NAME: ToDeleteSoom  # Nombre real de tu Azure Web App
   BUILD_CONFIG: Release
   PACKAGE_DIR: ${{ github.workspace }}/publish
 

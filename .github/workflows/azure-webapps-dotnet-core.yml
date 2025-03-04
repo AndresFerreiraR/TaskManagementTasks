@@ -16,78 +16,74 @@
 # For more information on GitHub Actions for Azure: https://github.com/Azure/Actions
 # For more information on the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # For more samples to get started with GitHub Action workflows to deploy to Azure: https://github.com/Azure/actions-workflow-samples
-name: Deploy .NET 8 API to Azure Web App
+name: Deploy .NET 8 API to Azure api App
 
 on:
   push:
     branches:
-      - main  # Se ejecuta cuando se hace push a main
+      - main
   workflow_dispatch:
 
 env:
-  AZURE_WEBAPP_NAME: ToDeleteSoom  # Nombre real de tu Azure Web App
-  AZURE_WEBAPP_PACKAGE_NAME: TaskManagement.Tasks.Api/publish
+  AZURE_APIAPP_NAME: TaskManagementTask
+  PACKAGE_NAME: TaskManagement.Tasks.Api/publish
   BUILD_CONFIG: Release
-  DOTNET_CORE_VERSION: 8.0.x
+  DOTNET_VERSION: 8.0.x
   WORKING_DIRECTORY: TaskManagement.Tasks.Api
-  #PACKAGE_DIR: ${{ github.workspace }}/publish
+
 
 jobs:
   build:
-    runs-on: ubuntu-latest  
-    environment: main  # Nombre del Environment en GitHub
+    runs-on: ubuntu-latest
+    environment: main
 
     steps:
-      - name: 🛒 Checkout del código
+      - name: 🛒 Checkout del codigo
         uses: actions/checkout@v4
 
       - name: 🔧 Configurar .NET 8
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
+          dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      - name: 🏗️ Restaurar dependencias
+      - name: 🏗️ Restore dependencies
         run: dotnet restore "${{ env.WORKING_DIRECTORY }}"
 
-      - name: 🔨 Compilar proyecto
+      - name: 🔨 Build Project
         run: dotnet build "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.BUILD_CONFIG }} --no-restore
 
-      - name: ✅ Ejecutar pruebas unitarias
+      - name: ✅ Run Unit Test
         run: dotnet test "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.BUILD_CONFIG }} --no-build --no-restore
 
-      - name: 📦 Publicar el proyecto
-        run: dotnet publish "${{ env.WORKING_DIRECTORY }}" -c ${{ env.BUILD_CONFIG }} -o "${{ env.AZURE_WEBAPP_PACKAGE_NAME }}" --self-contained false --no-build --no-restore
+      - name: 🛫 Generate Publish
+        run: dotnet publish "${{ env.WORKING_DIRECTORY }}" -c ${{ env.BUILD_CONFIG }} -o "${{ env.PACKAGE_NAME }}" --no-build --no-restore
 
-      #- name: 📦 Generar archivo .zip
-      #  run: |
-      #    cd $PACKAGE_DIR
-      #    zip -r ../deploy.zip .
-      - name: 🔍 Verificar archivos en la carpeta de publicación
-        run: ls -lR ${{ env.AZURE_WEBAPP_PACKAGE_NAME }}
-
-        
-      - name: Publish Artifacts
-        uses: actions/upload-artifact@v4
-        with: 
-          name: webapp
-          path: ${{ env.AZURE_WEBAPP_PACKAGE_NAME }}
-
-      - name: 🔍 Listar archivos antes de subir artifacts
-        run: ls -lR ${{ env.AZURE_WEBAPP_PACKAGE_NAME }}
+      - name: 🗜️ Generar archivo .zip
+        run: |
+         cd "${{ env.PACKAGE_NAME }}"
+         zip -r ../../Deploy.zip .
           
+      - name: ⬆️ Upload the zip in artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dotnet-api
+          path: Deploy.zip
+
   deploy:
     runs-on: ubuntu-latest
     needs: build
     environment: main
+    
     steps:
-      - name: Download artifact from buil job
+    
+      - name: ⬇️ Download artifact from buil job
         uses: actions/download-artifact@v4
         with:
-          name: webapp
-          path: ${{ env.AZURE_WEBAPP_PACKAGE_NAME }}
-      - name: 🚀 Desplegar en Azure Web App
+          name: dotnet-api
+          
+      - name: 🚀 Deploy in Azure API App
         uses: azure/webapps-deploy@v2
         with:
-          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          app-name: ${{ env.AZURE_APIAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: ${{ env.AZURE_WEBAPP_PACKAGE_NAME }}
+          package: Deploy.zip
